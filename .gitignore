@@ -46,3 +46,4 @@ sass/
 
 # 7zip files
 *.7z
+.DS_Store
