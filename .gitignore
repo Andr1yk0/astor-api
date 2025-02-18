@@ -44,6 +44,5 @@ sass/
 # Castalia statistics file (since XE7 Castalia is distributed with Delphi)
 *.stat
 
-# 7zip files
-*.7z
+settings.ini
 .DS_Store

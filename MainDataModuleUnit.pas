@@ -3,7 +3,7 @@ unit MainDataModuleUnit;
 interface
 
 uses
-  System.SysUtils, System.Classes, Data.DB, Data.Win.ADODB;
+  System.SysUtils, System.Classes, Data.DB, Data.Win.ADODB, IniFiles;
 
 type
   TMainDataModule = class(TDataModule)
@@ -24,14 +24,19 @@ implementation
 {$R *.dfm}
 
 procedure TMainDataModule.DataModuleCreate(Sender: TObject);
+var
+  IniFile: TIniFile;
 begin
+  IniFile := TIniFile.create(ExtractFilePath(ParamStr(0)) + '..\..\settings.ini');
   FDBConnection := TADOConnection.Create(Self);
-  FDBConnection.ConnectionString := 'Provider=MSOLEDBSQL.1;' +
-    'Password=VeryStr0ngP@ssw0rd;' + 'Persist Security Info=True;' +
-    'User ID=sa;' + 'Initial Catalog=REQUESTS;' +
-    'Data Source=10.211.55.4,1433;' + 'Initial File Name="";' +
-    'Trust Server Certificate=True;' + 'Server SPN="";' + 'Authentication="";' +
-    'Access Token=""';
+  var conn: string := 'Provider=MSOLEDBSQL.1;'
+    + 'User ID=' + IniFile.ReadString('DB', 'User', '') + ';'
+    + 'Password=' + IniFile.ReadString('DB', 'Password', '') + ';'
+    + 'Initial Catalog=' + IniFile.ReadString('DB', 'Database', '') + ';'
+    + 'Data Source=' + IniFile.ReadString('DB', 'Host', '') + ';';
+
+  FDBConnection.ConnectionString := conn;
+
   FDBConnection.LoginPrompt := False;
   FDBConnection.Connected := True;
 end;
